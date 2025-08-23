@@ -20,7 +20,7 @@ function App() {
   return (
     <main>
       <button onClick={handleSecret}>Start Game</button>
-      {secret.length > 0 && <p>{secret.join('')}</p>}
+      {secret.length > 0 && <p>Secret Code: {secret.join('')}</p>}
     </main>
   )
 }
