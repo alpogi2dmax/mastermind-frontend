@@ -47,6 +47,12 @@ function App() {
     if (!game || game.finished) return
     try {
       const guessNumbers = guess.map(Number)
+
+      if (guessNumbers.some(n => n < settings.min || n > settings.max)) {
+        setMessage(`All numbers must be between ${settings.min} and ${settings.max}`)
+        return
+      }
+      
       const response = await fetch(`${import.meta.env.VITE_API_URL}/api/evaluate`, {
         method: 'POST',
         headers: {'Content-Type': 'application/json'},
@@ -84,13 +90,13 @@ function App() {
 
   return (
     <main>
-      <SettingsSelector settings={settings} setSettings={setSettings} />
-      <GameControls handleSecret={handleSecret} handleHint={handleHint} />
+      {(!game.secret ||game.finished)  && <SettingsSelector settings={settings} setSettings={setSettings} />}
+      <GameControls handleSecret={handleSecret} handleHint={handleHint} game={game}/>
       {game && game.secret && <p>Secret Code: {game.secret.join(' ')}</p>}
       {game && game.secret && (
         <>
           <p>Attempts: {game.attempts} / {game.max_attempts}</p>
-          <GuessInput guess={guess} setGuess={setGuess} handleSubmitGuess={handleSubmitGuess} game={game} />
+          <GuessInput guess={guess} setGuess={setGuess} handleSubmitGuess={handleSubmitGuess} game={game} settings={settings}/>
           <History history={game.history} />
           {game.finished && <p>Game Over! The secret code was: {game.secret.join(' ')}</p>}
           <p>{message}</p>

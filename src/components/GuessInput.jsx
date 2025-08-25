@@ -1,12 +1,12 @@
-export default function GuessInput({ guess, setGuess, handleSubmitGuess, game }) {
+export default function GuessInput({ guess, setGuess, handleSubmitGuess, game, settings }) {
   return (
     <div>
       {guess.map((val, i) => (
         <input
           key={i}
           type='number'
-          min='0'
-          max='7'
+          min={settings.min}
+          max={settings.max}
           value={val}
           onChange={e => {
             const newGuess = [...guess]
