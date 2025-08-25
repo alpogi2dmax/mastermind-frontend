@@ -12,7 +12,7 @@ function App() {
   useEffect(() => {
     const fetchSettings = async () => {
       try {
-        const response = await fetch('http://localhost:5000/api/settings')
+        const response = await fetch(`${import.meta.env.VITE_API_URL}/api/settings`)
         const data = await response.json()
         setSettings(data)
         console.log(data)
@@ -26,7 +26,7 @@ function App() {
 
   const handleSecret = async () => {
     try {
-      const response = await fetch('http://localhost:5000/api/generate', {
+      const response = await fetch(`${import.meta.env.VITE_API_URL}/api/generate`, {
         method:'POST',
         headers: {'Content-Type': 'application/json'},
         body: JSON.stringify({ settings: settings })
@@ -46,7 +46,7 @@ function App() {
     if (!game || game.finished) return
     try {
       const guessNumbers = guess.map(Number)
-      const response = await fetch('http://localhost:5000/api/evaluate', {
+      const response = await fetch(`${import.meta.env.VITE_API_URL}/api/evaluate`, {
         method: 'POST',
         headers: {'Content-Type': 'application/json'},
         body: JSON.stringify({ guess: guessNumbers } )
@@ -66,7 +66,7 @@ function App() {
 
   const handleHint = async () => {
     try {
-      const response = await fetch('http://localhost:5000/api/gethint')
+      const response = await fetch(`${import.meta.env.VITE_API_URL}/api/gethint`)
       const data = await response.json()
       const hint = data.hint.join(', ')
       if (data.finished) {
