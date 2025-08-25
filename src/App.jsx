@@ -1,6 +1,8 @@
 import { useState, useEffect } from 'react'
-import reactLogo from './assets/react.svg'
-import viteLogo from '/vite.svg'
+import SettingsSelector from './components/SettingsSelector'
+import GuessInput from './components/GuessInput'
+import History from './components/History'
+import GameControls from './components/GameControls'
 import './App.css'
 
 function App() {
@@ -15,7 +17,6 @@ function App() {
         const response = await fetch(`${import.meta.env.VITE_API_URL}/api/settings`)
         const data = await response.json()
         setSettings(data)
-        console.log(data)
       } catch (error) {
         console.error('Error fetching settings:', error)
         alert('Failed to fetch settings')
@@ -83,74 +84,14 @@ function App() {
 
   return (
     <main>
-      {settings && (
-        <>
-          <label>
-            Number of digits:
-            <select
-              value={settings.num}
-              onChange={(e) =>
-                setSettings({...settings, num: parseInt(e.target.value)})
-              }
-            >
-              {[4, 5, 6, 7, 8].map((n) => (
-                <option key={n} value={n}>
-                  {n}
-                </option>
-              ))}
-            </select>
-          </label>
-          <label>
-            Max digits:
-            <select
-              value={settings.max}
-              onChange={(e) =>
-                setSettings({...settings, max: parseInt(e.target.value)})
-              }
-            >
-              {[7, 8, 9, 10].map((n) => (
-                <option key={n} value={n}>
-                  {n}
-                </option>
-              ))}
-            </select>
-          </label>
-        </>
-      )}
-      <button onClick={handleSecret}>Start Game</button>
+      <SettingsSelector settings={settings} setSettings={setSettings} />
+      <GameControls handleSecret={handleSecret} handleHint={handleHint} />
       {game && game.secret && <p>Secret Code: {game.secret.join(' ')}</p>}
       {game && game.secret && (
         <>
           <p>Attempts: {game.attempts} / {game.max_attempts}</p>
-          <div>
-            {guess.map((val, i) => (
-              <input 
-                key={i} 
-                type='number' 
-                min='0'
-                max='7' 
-                value={val} 
-                onChange={e => {
-                  const newGuess = [...guess]
-                  newGuess[i] = e.target.value
-                  setGuess(newGuess)
-                }}
-              />
-            ))}
-            <button onClick={handleSubmitGuess} disabled={game.finished}>
-              Submit Guess
-            </button>
-          </div>
-          <button onClick={handleHint}>Hint</button>
-
-          <h2>History</h2>
-          <ul>
-            {game.history.map((entry, idx) => (
-              <li key={idx}>
-                Guess: {entry.guess.join(' ')} | Correct number: {entry.correct_number} | Correct location: {entry.correct_location}
-              </li>
-            ))}
-          </ul>
+          <GuessInput guess={guess} setGuess={setGuess} handleSubmitGuess={handleSubmitGuess} game={game} />
+          <History history={game.history} />
           {game.finished && <p>Game Over! The secret code was: {game.secret.join(' ')}</p>}
           <p>{message}</p>
         </>
