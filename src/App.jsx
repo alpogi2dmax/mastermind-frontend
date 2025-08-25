@@ -1,22 +1,41 @@
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import reactLogo from './assets/react.svg'
 import viteLogo from '/vite.svg'
 import './App.css'
 
 function App() {
   const [game, setGame] = useState([])
-  const [guess, setGuess] = useState(['','','',''])
-  const [result, setResult] = useState(null)
+  const [guess, setGuess] = useState([])
   const [message, setMessage] = useState('')
+  const [settings, setSettings] = useState(null)
+
+  useEffect(() => {
+    const fetchSettings = async () => {
+      try {
+        const response = await fetch('http://localhost:5000/api/settings')
+        const data = await response.json()
+        setSettings(data)
+        console.log(data)
+      } catch (error) {
+        console.error('Error fetching settings:', error)
+        alert('Failed to fetch settings')
+      }
+    }
+    fetchSettings()
+  }, [])
 
   const handleSecret = async () => {
     try {
-      const response = await fetch('http://localhost:5000/api/generate')
+      const response = await fetch('http://localhost:5000/api/generate', {
+        method:'POST',
+        headers: {'Content-Type': 'application/json'},
+        body: JSON.stringify({ settings: settings })
+      })
       const data = await response.json()
       console.log(data)
       setGame(data)
       setMessage('Game Started! Make your guess.')
-      setGuess(['','','',''])
+      setGuess(new Array(data.secret.length).fill(''))
     } catch (error) {
       console.error('Error fetching secret code:', error);
       alert('Failed to generate code.')
@@ -45,8 +64,59 @@ function App() {
     }
   }
 
+  const handleHint = async () => {
+    try {
+      const response = await fetch('http://localhost:5000/api/gethint')
+      const data = await response.json()
+      const hint = data.hint.join(', ')
+      if (data.finished) {
+        setMessage(`Game is finished. Code is ${hint}`)
+      } else {
+        setMessage(hint)
+      }
+      setGame(data)
+    } catch (error) {
+      console.error('Error in getting hint:', error)
+      alert('Failed to get hint')
+    }
+  }
+
   return (
     <main>
+      {settings && (
+        <>
+          <label>
+            Number of digits:
+            <select
+              value={settings.num}
+              onChange={(e) =>
+                setSettings({...settings, num: parseInt(e.target.value)})
+              }
+            >
+              {[4, 5, 6, 7, 8].map((n) => (
+                <option key={n} value={n}>
+                  {n}
+                </option>
+              ))}
+            </select>
+          </label>
+          <label>
+            Max digits:
+            <select
+              value={settings.max}
+              onChange={(e) =>
+                setSettings({...settings, max: parseInt(e.target.value)})
+              }
+            >
+              {[7, 8, 9, 10].map((n) => (
+                <option key={n} value={n}>
+                  {n}
+                </option>
+              ))}
+            </select>
+          </label>
+        </>
+      )}
       <button onClick={handleSecret}>Start Game</button>
       {game && game.secret && <p>Secret Code: {game.secret.join(' ')}</p>}
       {game && game.secret && (
@@ -71,6 +141,7 @@ function App() {
               Submit Guess
             </button>
           </div>
+          <button onClick={handleHint}>Hint</button>
 
           <h2>History</h2>
           <ul>
