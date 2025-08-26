@@ -107,7 +107,7 @@ function App() {
         setDifficulty('Normal')
         setPlayer('')
       } else if (data.finished) {
-        setMessage(`Game over! The secret was ${data.secret.join(' ')}.`)
+        setMessage(`Game over! The secret was ${data.secret.join(' ')}. Thank you for playing.`)
         fetchLeaderBoard()
       } else {
         setMessage('Guess submitted')
@@ -125,10 +125,10 @@ function App() {
       const data = await response.json()
       const hint = data.hint.join(', ')
       if (data.finished) {
-        setMessage(`Game is finished. Code is ${hint}`)
+        setMessage(`Game is finished. Code is ${hint}. Thank you for playing!`)
         setPlayer('')
       } else {
-        setMessage(hint)
+        setMessage(`${hint}. You now have ${data.attempts} attempts.`)
       }
       setGame(data)
     } catch (error) {
