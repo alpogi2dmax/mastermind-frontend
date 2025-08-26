@@ -27,6 +27,17 @@ function App() {
     fetchSettings()
   }, [])
 
+  const fetchLeaderBoard = async () => {
+    try {
+      const response = await fetch(`${import.meta.env.VITE_API_URL}/api/getleaderboard`)
+      const data = await response.json()
+      console.log(data)
+    } catch (error) {
+      console.error('Error in getting leaderboard:', error)
+      alert('Failed to get leaderboard')
+    }
+  }
+
   const handleSecret = async () => {
     let updatedSettings = {...settings}
     if (difficulty === 'Easy') {
@@ -76,15 +87,24 @@ function App() {
       })
       const data = await response.json()
       setGame(data)
-      if (data.finished) {
-        let min = parseInt(data.elapsed_time/60)
-        let sec = data.elapsed_time % 60
-        setMessage(`Game finished! Elapsed Time: ${min}:${sec}` )
+      const isCorrect = data.secret.every((num, idx) => num === guessNumbers[idx])
+
+      if (isCorrect) {
+        let min = Math.floor(data.elapsed_time / 60)
+        let sec = Math.floor(data.elapsed_time % 60)
+        setMessage(`🎉 Congratulations! You guessed it! Elapsed Time: ${min}:${sec}`)
+        fetchLeaderBoard()
         setDifficulty('Normal')
         setPlayer('')
+      } else if (data.finished) {
+        let min = Math.floor(data.elapsed_time / 60)
+        let sec = Math.floor(data.elapsed_time % 60)
+        setMessage(`Game over! The secret was ${data.secret.join(' ')}.`)
+        fetchLeaderBoard()
       } else {
         setMessage('Guess submitted')
       }
+
     } catch (error) {
       console.error('Error evaluating guess:', error)
       alert('Failed to evaluate guess.')
@@ -109,6 +129,9 @@ function App() {
     }
   }
 
+
+  
+
   return (
     <main>
       {(!game.secret ||game.finished)  && 
@@ -128,7 +151,7 @@ function App() {
           <p>Attempts: {game.attempts} / {game.max_attempts}</p>
           <GuessInput guess={guess} setGuess={setGuess} handleSubmitGuess={handleSubmitGuess} game={game} settings={settings}/>
           <History history={game.history} />
-          {game.finished && <p>Game Over! The secret code was: {game.secret.join(' ')}</p>}
+          {/* {game.finished && <p>Game Over! The secret code was: {game.secret.join(' ')}</p>} */}
         </>
       )}
       <p>{message}</p>
