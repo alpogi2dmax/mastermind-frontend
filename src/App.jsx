@@ -11,6 +11,7 @@ function App() {
   const [message, setMessage] = useState('')
   const [settings, setSettings] = useState(null)
   const [difficulty, setDifficulty] = useState('Normal')
+  const [player, setPlayer] = useState('')
 
   useEffect(() => {
     const fetchSettings = async () => {
@@ -35,11 +36,16 @@ function App() {
     } else {
       updatedSettings = {...updatedSettings, num: 4, min: 0, max: 7}
     }
+
+    if (player.length < 3) {
+      setMessage('Player name should be have 3 or more characters')
+      return
+    }
     try {
       const response = await fetch(`${import.meta.env.VITE_API_URL}/api/generate`, {
         method:'POST',
         headers: {'Content-Type': 'application/json'},
-        body: JSON.stringify({ settings: updatedSettings })
+        body: JSON.stringify({ settings: updatedSettings, difficulty: difficulty, player: player })
       })
       const data = await response.json()
       console.log(data)
@@ -71,10 +77,11 @@ function App() {
       const data = await response.json()
       setGame(data)
       if (data.finished) {
-        let min = parseInt(80/data.elapsed_time)
-        let sec = 80 % 60
+        let min = parseInt(data.elapsed_time/60)
+        let sec = data.elapsed_time % 60
         setMessage(`Game finished! Elapsed Time: ${min}:${sec}` )
         setDifficulty('Normal')
+        setPlayer('')
       } else {
         setMessage('Guess submitted')
       }
@@ -91,6 +98,7 @@ function App() {
       const hint = data.hint.join(', ')
       if (data.finished) {
         setMessage(`Game is finished. Code is ${hint}`)
+        setPlayer('')
       } else {
         setMessage(hint)
       }
@@ -103,7 +111,16 @@ function App() {
 
   return (
     <main>
-      {(!game.secret ||game.finished)  && <SettingsSelector settings={settings} setSettings={setSettings} difficulty={difficulty} setDifficulty={setDifficulty}/>}
+      {(!game.secret ||game.finished)  && 
+        <SettingsSelector 
+          settings={settings} 
+          setSettings={setSettings} 
+          difficulty={difficulty} 
+          setDifficulty={setDifficulty}
+          player={player}
+          setPlayer={setPlayer}
+        />
+      }
       <GameControls handleSecret={handleSecret} handleHint={handleHint} game={game}/>
       {game && game.secret && <p>Secret Code: {game.secret.join(' ')}</p>}
       {game && game.secret && (
@@ -112,9 +129,9 @@ function App() {
           <GuessInput guess={guess} setGuess={setGuess} handleSubmitGuess={handleSubmitGuess} game={game} settings={settings}/>
           <History history={game.history} />
           {game.finished && <p>Game Over! The secret code was: {game.secret.join(' ')}</p>}
-          <p>{message}</p>
         </>
       )}
+      <p>{message}</p>
     </main>
   )
 }

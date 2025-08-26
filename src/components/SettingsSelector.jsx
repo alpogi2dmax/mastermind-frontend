@@ -1,8 +1,17 @@
-export default function SettingsSelector({ settings, setSettings, difficulty, setDifficulty }) {
+export default function SettingsSelector({ settings, setSettings, difficulty, setDifficulty, player, setPlayer }) {
   if (!settings) return null
 
   return (
     <div className='settings'>
+      <label>
+        Player Name:
+        <input 
+          type='text' 
+          value={player} 
+          placeholder='Type your Name' 
+          onChange={(e)=>setPlayer(e.target.value)}
+        />
+      </label>
       <label>
         Difficulty:
         <select
