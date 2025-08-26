@@ -66,7 +66,7 @@ function App() {
       setStartGame(false)
       setGame(data)
       setSettings(updatedSettings)
-      setMessage(`Guess the secret code (numbers between ${settings.min} and ${settings.max}) within the allowed attempts and use the hints to crack it!`)
+      setMessage(`Guess the secret code (numbers between ${updatedSettings.min} and ${updatedSettings.max}) within the allowed attempts and use the hints to crack it!`)
       setGuess(new Array(data.secret.length).fill(''))
     } catch (error) {
       console.error('Error fetching secret code:', error);
