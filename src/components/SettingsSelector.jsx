@@ -1,9 +1,20 @@
-export default function SettingsSelector({ settings, setSettings }) {
+export default function SettingsSelector({ settings, setSettings, difficulty, setDifficulty }) {
   if (!settings) return null
 
   return (
     <div className='settings'>
       <label>
+        Difficulty:
+        <select
+          value={difficulty}
+          onChange={(e) => setDifficulty(e.target.value)}
+        >
+          <option>Easy</option>
+          <option>Normal</option>
+          <option>Hard</option>
+        </select>
+      </label>
+      {/* <label>
         Number of digits:
         <select
           value={settings.num}
@@ -28,7 +39,7 @@ export default function SettingsSelector({ settings, setSettings }) {
             <option key={n} value={n}>{n}</option>
           ))}
         </select>
-      </label>
+      </label> */}
     </div>
   )
 }

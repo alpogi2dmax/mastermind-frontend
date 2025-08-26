@@ -10,6 +10,7 @@ function App() {
   const [guess, setGuess] = useState([])
   const [message, setMessage] = useState('')
   const [settings, setSettings] = useState(null)
+  const [difficulty, setDifficulty] = useState('Normal')
 
   useEffect(() => {
     const fetchSettings = async () => {
@@ -26,15 +27,24 @@ function App() {
   }, [])
 
   const handleSecret = async () => {
+    let updatedSettings = {...settings}
+    if (difficulty === 'Easy') {
+      updatedSettings = {...updatedSettings, num: 3, min: 0, max: 5}
+    } else if (difficulty === 'Hard') {
+      updatedSettings = {...updatedSettings, num: 5, min: 0, max: 9}
+    } else {
+      updatedSettings = {...updatedSettings, num: 4, min: 0, max: 7}
+    }
     try {
       const response = await fetch(`${import.meta.env.VITE_API_URL}/api/generate`, {
         method:'POST',
         headers: {'Content-Type': 'application/json'},
-        body: JSON.stringify({ settings: settings })
+        body: JSON.stringify({ settings: updatedSettings })
       })
       const data = await response.json()
       console.log(data)
       setGame(data)
+      setSettings(updatedSettings)
       setMessage('Game Started! Make your guess.')
       setGuess(new Array(data.secret.length).fill(''))
     } catch (error) {
@@ -62,6 +72,7 @@ function App() {
       setGame(data)
       if (data.finished) {
         setMessage('Game finished!')
+        setDifficulty('Normal')
       } else {
         setMessage('Guess submitted')
       }
@@ -90,7 +101,7 @@ function App() {
 
   return (
     <main>
-      {(!game.secret ||game.finished)  && <SettingsSelector settings={settings} setSettings={setSettings} />}
+      {(!game.secret ||game.finished)  && <SettingsSelector settings={settings} setSettings={setSettings} difficulty={difficulty} setDifficulty={setDifficulty}/>}
       <GameControls handleSecret={handleSecret} handleHint={handleHint} game={game}/>
       {game && game.secret && <p>Secret Code: {game.secret.join(' ')}</p>}
       {game && game.secret && (

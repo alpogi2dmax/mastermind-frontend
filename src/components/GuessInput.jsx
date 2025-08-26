@@ -1,6 +1,6 @@
 export default function GuessInput({ guess, setGuess, handleSubmitGuess, game, settings }) {
   return (
-    <div>
+    <div className='guess-input'>
       {guess.map((val, i) => (
         <input
           key={i}
