@@ -3,6 +3,7 @@ import SettingsSelector from './components/SettingsSelector'
 import GuessInput from './components/GuessInput'
 import History from './components/History'
 import GameControls from './components/GameControls'
+import Leaderboard from './components/Leaderboard'
 import './App.css'
 
 function App() {
@@ -12,6 +13,7 @@ function App() {
   const [settings, setSettings] = useState(null)
   const [difficulty, setDifficulty] = useState('Normal')
   const [player, setPlayer] = useState('')
+  const [leaderboard, setLeaderboard] = useState(null)
 
   useEffect(() => {
     const fetchSettings = async () => {
@@ -31,7 +33,7 @@ function App() {
     try {
       const response = await fetch(`${import.meta.env.VITE_API_URL}/api/getleaderboard`)
       const data = await response.json()
-      console.log(data)
+      setLeaderboard(data)
     } catch (error) {
       console.error('Error in getting leaderboard:', error)
       alert('Failed to get leaderboard')
@@ -145,8 +147,8 @@ function App() {
         />
       }
       <GameControls handleSecret={handleSecret} handleHint={handleHint} game={game}/>
-      {game && game.secret && <p>Secret Code: {game.secret.join(' ')}</p>}
-      {game && game.secret && (
+      {game && game.secret && !game.finished && <p>Secret Code: {game.secret.join(' ')}</p>}
+      {game && game.secret && !game.finished && (
         <>
           <p>Attempts: {game.attempts} / {game.max_attempts}</p>
           <GuessInput guess={guess} setGuess={setGuess} handleSubmitGuess={handleSubmitGuess} game={game} settings={settings}/>
@@ -155,6 +157,7 @@ function App() {
         </>
       )}
       <p>{message}</p>
+      {leaderboard && game.finished && <Leaderboard leaderboard={leaderboard} difficulty={difficulty}/>}
     </main>
   )
 }
