@@ -4,10 +4,11 @@ export default function Leaderboard({leaderboard, difficulty}) {
 
     const [diff, setDiff] = useState(difficulty)
 
+    useState(() => {
+        setDiff(difficulty)
+    }, [difficulty])
+
     return (
-
-        
-
         <div>
             <h2>Leaderboard</h2>
             <label>

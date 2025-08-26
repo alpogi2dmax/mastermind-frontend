@@ -75,6 +75,14 @@ function App() {
   const handleSubmitGuess = async () => {
     if (!game || game.finished) return
     try {
+
+      for (let num of guess) {
+        if (num === '') {
+          setMessage(`All numbers must be filled between ${settings.min} and ${settings.max}`)
+          return
+        }
+      }
+
       const guessNumbers = guess.map(Number)
 
       if (guessNumbers.some(n => n < settings.min || n > settings.max)) {
@@ -99,8 +107,6 @@ function App() {
         setDifficulty('Normal')
         setPlayer('')
       } else if (data.finished) {
-        let min = Math.floor(data.elapsed_time / 60)
-        let sec = Math.floor(data.elapsed_time % 60)
         setMessage(`Game over! The secret was ${data.secret.join(' ')}.`)
         fetchLeaderBoard()
       } else {
@@ -136,6 +142,7 @@ function App() {
 
   return (
     <main>
+      <h1>Mastermind</h1>
       {(!game.secret ||game.finished)  && 
         <SettingsSelector 
           settings={settings} 
@@ -152,7 +159,7 @@ function App() {
         <>
           <p>Attempts: {game.attempts} / {game.max_attempts}</p>
           <GuessInput guess={guess} setGuess={setGuess} handleSubmitGuess={handleSubmitGuess} game={game} settings={settings}/>
-          <History history={game.history} />
+          {game.history.length > 0 &&<History history={game.history} />}
           {/* {game.finished && <p>Game Over! The secret code was: {game.secret.join(' ')}</p>} */}
         </>
       )}

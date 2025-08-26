@@ -3,7 +3,7 @@ export default function SettingsSelector({ settings, setSettings, difficulty, se
 
   return (
     <div className='settings'>
-      <label>
+      <label className='input-container'>
         Player Name:
         <input 
           type='text' 
@@ -12,7 +12,7 @@ export default function SettingsSelector({ settings, setSettings, difficulty, se
           onChange={(e)=>setPlayer(e.target.value)}
         />
       </label>
-      <label>
+      <label className='input-container'>
         Difficulty:
         <select
           value={difficulty}
