@@ -19,7 +19,7 @@ body {
 /* Main game container */
 main {
   width: 90%;
-  max-width: 800px;
+  max-width: 500px;
   padding: 2rem;
   background-color: #1a1a1a; /* slightly lighter for contrast */
   border-radius: 12px;
@@ -100,4 +100,14 @@ h1 {
   height: 50px;
   width: 50px;
   border-radius: 10px;
+}
+
+.leaderboard {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+
+.leaderboard > button {
+  margin-bottom: 1em;
 }

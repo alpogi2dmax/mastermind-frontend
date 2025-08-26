@@ -1,6 +1,7 @@
+import { SystemMessage } from "@langchain/core/messages"
 import { useState } from "react"
 
-export default function Leaderboard({leaderboard, difficulty}) {
+export default function Leaderboard({leaderboard, difficulty, setStartGame, setMessage}) {
 
     const [diff, setDiff] = useState(difficulty)
 
@@ -8,9 +9,17 @@ export default function Leaderboard({leaderboard, difficulty}) {
         setDiff(difficulty)
     }, [difficulty])
 
+    const handleclick = () => {
+        setStartGame(true)
+        setMessage('')
+    }
+
     return (
-        <div>
+        <div className='leaderboard'>
             <h2>Leaderboard</h2>
+            <button onClick={handleclick}
+                >Play Again
+            </button>
             <label>
                 Difficulty:
                 <select

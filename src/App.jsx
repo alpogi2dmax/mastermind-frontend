@@ -7,6 +7,7 @@ import Leaderboard from './components/Leaderboard'
 import './App.css'
 
 function App() {
+  const [startGame, setStartGame] = useState(true)
   const [game, setGame] = useState([])
   const [guess, setGuess] = useState([])
   const [message, setMessage] = useState('')
@@ -62,9 +63,10 @@ function App() {
       })
       const data = await response.json()
       console.log(data)
+      setStartGame(false)
       setGame(data)
       setSettings(updatedSettings)
-      setMessage('Game Started! Make your guess.')
+      setMessage(`Guess the secret code (numbers between ${settings.min} and ${settings.max}) within the allowed attempts and use the hints to crack it!`)
       setGuess(new Array(data.secret.length).fill(''))
     } catch (error) {
       console.error('Error fetching secret code:', error);
@@ -127,6 +129,7 @@ function App() {
       if (data.finished) {
         setMessage(`Game is finished. Code is ${hint}. Thank you for playing!`)
         setPlayer('')
+        fetchLeaderBoard()
       } else {
         setMessage(`${hint}. You now have ${data.attempts} attempts.`)
       }
@@ -137,13 +140,10 @@ function App() {
     }
   }
 
-
-  
-
   return (
     <main>
       <h1>Mastermind</h1>
-      {(!game.secret ||game.finished)  && 
+      {startGame && 
         <SettingsSelector 
           settings={settings} 
           setSettings={setSettings} 
@@ -153,8 +153,8 @@ function App() {
           setPlayer={setPlayer}
         />
       }
-      <GameControls handleSecret={handleSecret} handleHint={handleHint} game={game}/>
-      {game && game.secret && !game.finished && <p>Secret Code: {game.secret.join(' ')}</p>}
+      <GameControls handleSecret={handleSecret} handleHint={handleHint} game={game} startGame={startGame}/>
+      {/* {game && game.secret && !game.finished && <p>Secret Code: {game.secret.join(' ')}</p>} */}
       {game && game.secret && !game.finished && (
         <>
           <p>Attempts: {game.attempts} / {game.max_attempts}</p>
@@ -164,7 +164,14 @@ function App() {
         </>
       )}
       <p>{message}</p>
-      {leaderboard && game.finished && <Leaderboard leaderboard={leaderboard} difficulty={difficulty}/>}
+      {leaderboard && game.finished && !startGame && 
+        <Leaderboard 
+          leaderboard={leaderboard} 
+          difficulty={difficulty} 
+          setStartGame={setStartGame} 
+          setMessage={setMessage}
+        />
+      }
     </main>
   )
 }
