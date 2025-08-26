@@ -71,7 +71,9 @@ function App() {
       const data = await response.json()
       setGame(data)
       if (data.finished) {
-        setMessage('Game finished!')
+        let min = parseInt(80/data.elapsed_time)
+        let sec = 80 % 60
+        setMessage(`Game finished! Elapsed Time: ${min}:${sec}` )
         setDifficulty('Normal')
       } else {
         setMessage('Guess submitted')
