@@ -37,7 +37,7 @@ This is the **frontend** for the Mastermind game, built with **React** and **Vit
 1. Clone the frontend repository:
 
 ```bash
-git clone <frontend-repo-url>
+git clone https://github.com/alpogi2dmax/mastermind-frontend
 cd mastermind-frontend
 ```
 
