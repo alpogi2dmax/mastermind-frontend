@@ -127,7 +127,7 @@ function App() {
       const data = await response.json()
       const hint = data.hint.join(', ')
       if (data.finished) {
-        setMessage(`Game is finished. Code is ${hint}. Thank you for playing!`)
+        setMessage(`Game is finished. Code is ${data.secret.join('')}. Thank you for playing!`)
         setPlayer('')
         fetchLeaderBoard()
       } else {
