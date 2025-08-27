@@ -57,7 +57,7 @@ npm install
 VITE_API_URL=http://localhost:5000
 ```
 
-- .env.production -- points to the deployedbackend:
+- .env.production -- points to the deployed backend:
 
 ```
 VITE_API_URL=https://mastermind-cqjz.onrender.com
