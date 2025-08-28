@@ -66,7 +66,7 @@ function App() {
       setStartGame(false)
       setGame(data)
       setSettings(updatedSettings)
-      setMessage(`Guess the secret code (numbers between ${updatedSettings.min} and ${updatedSettings.max}) within the allowed attempts and use the hints to crack it!`)
+      setMessage(`Guess the secret code (numbers from ${updatedSettings.min} to ${updatedSettings.max}) within the allowed attempts and use the hints to crack it!`)
       setGuess(new Array(data.secret.length).fill(''))
     } catch (error) {
       console.error('Error fetching secret code:', error);
@@ -80,7 +80,7 @@ function App() {
 
       for (let num of guess) {
         if (num === '') {
-          setMessage(`All numbers must be filled between ${settings.min} and ${settings.max}`)
+          setMessage(`All numbers filled must be from ${settings.min} to ${settings.max} only`)
           return
         }
       }
@@ -104,7 +104,7 @@ function App() {
       if (isCorrect) {
         let min = Math.floor(data.elapsed_time / 60)
         let sec = Math.floor(data.elapsed_time % 60)
-        setMessage(`🎉 Congratulations! You guessed it! Elapsed Time: ${min}:${sec}`)
+        setMessage(`🎉 Congratulations! You guessed it! Code is ${game.secret.join(' ')}! Elapsed Time: ${min}:${sec}`)
         fetchLeaderBoard()
         setDifficulty('Normal')
         setPlayer('')
