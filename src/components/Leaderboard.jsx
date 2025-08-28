@@ -37,7 +37,7 @@ export default function Leaderboard({leaderboard, difficulty, setStartGame, setM
                     let sec = Math.floor(player.elapsed_time % 60)
                     return (
                         <p key={player.id}>
-                            {player.player_name} {min}:{sec}
+                            {player.player_name} | {min}:{sec} | {player.attempts} Attempts
                         </p>
                 )})
             ) : (

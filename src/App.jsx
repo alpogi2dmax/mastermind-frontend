@@ -104,7 +104,7 @@ function App() {
       if (isCorrect) {
         let min = Math.floor(data.elapsed_time / 60)
         let sec = Math.floor(data.elapsed_time % 60)
-        setMessage(`🎉 Congratulations! You guessed it! Code is ${game.secret.join(' ')}! Elapsed Time: ${min}:${sec}`)
+        setMessage(`Congratulations! You guessed it! Code is ${game.secret.join(' ')}! Elapsed Time: ${min}:${sec}`)
         fetchLeaderBoard()
         setDifficulty('Normal')
         setPlayer('')
