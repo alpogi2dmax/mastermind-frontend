@@ -8,7 +8,7 @@ import './App.css'
 
 function App() {
   const [startGame, setStartGame] = useState(true)
-  const [game, setGame] = useState([])
+  const [game, setGame] = useState({})
   const [guess, setGuess] = useState([])
   const [message, setMessage] = useState('')
   const [settings, setSettings] = useState(null)
